@@ -1,12 +1,24 @@
 'use strict';
-var imageCont = document.getElementById('product-container');
-var dataCont = document.getElementById('data-container');
+var imageContainer = document.getElementById('product-container');
+var dataContainer = document.getElementById('data-container');
 var ImageArray =[];
 
 var productArray = [];
-var roundCount = 25;
-
+var Counts = 5;
 var clickCount = 0;
+var parsedProductsArray = [];
+
+function checkLocalStorage() {
+  if (localStorage.getItem('products') === null) {
+    newProducts();
+  } else {
+       var getItems = localStorage.getItem('items');
+        var parsedItemsArray = JSON.parse('getItems');
+        productArray = parsedProductsArray;
+  } 
+}
+checkLocalStorage();
+
 
 function Item(name){
   this.filepath = `../img/${name}.jpg`;
@@ -16,26 +28,27 @@ function Item(name){
   this.displayCount = 0;
   productArray.push(this);
 }
-new Item('bag');
-new Item('banana');
-new Item('bathroom');
-new Item('boots');
-new Item('breakfast');
-new Item('bubblegum');
-new Item('chair');
-new Item('cthulhu');
-new Item('dog-duck');
-new Item('dragon');
-new Item('pen');
-new Item('pet-sweep');
-new Item('scissors');
-new Item('shark');
-new Item('tauntaun');
-new Item('unicorn');
-new Item('water-can');
-new Item('wine-glass');
-
-var usb = {
+function newItem(){
+  new Item('bag');
+  new Item('banana');
+  new Item('bathroom');
+  new Item('boots');
+  new Item('breakfast');
+  new Item('bubblegum');
+  new Item('chair');
+  new Item('cthulhu');
+  new Item('dog-duck');
+  new Item('dragon');
+  new Item('pen');
+  new Item('pet-sweep');
+  new Item('scissors');
+  new Item('shark');
+  new Item('tauntaun');
+  new Item('unicorn');
+  new Item('water-can');
+  new Item('wine-glass');
+  
+  var usb = {
   filepath: '../img/usb.gif',
   alt: 'usb',
   title:'usb',
@@ -52,19 +65,21 @@ var sweep = {
 
 productArray.push(sweep);
 productArray.push(usb);
+}
 
 function getRandomImage(){
   var randomIndex = getRandomNumber(productArray.length);
 
-  while(uniqueImageArray.includes(randomIndex)){
+  while(ImageArray.includes(randomIndex)){
     randomIndex = getRandomNumber(productArray.length);
   }
 
   
   ImageArray.push(randomIndex);
 
-  if(ImageArray.length > 6){
-    ImageArray.shift();
+  
+  if(uniqueImageArray.length > 6){
+    uniqueImageArray.shift();
   }
   var chosenImage = productArray[randomIndex];
   chosenImage.displayCount++;
@@ -74,7 +89,7 @@ function getRandomImage(){
   imageElement.setAttribute('src', chosenImage.filepath);
   imageElement.setAttribute('alt', chosenImage.alt);
   imageElement.setAttribute('name', chosenImage.title);
-  
+ 
   imageContainer.appendChild(imageElement);
 }
 
@@ -85,10 +100,9 @@ function getRandomNumber(max) {
 function callbackClick(event){
   
   var altValue = event.target.alt;
-
   
   for(var i=0; i<productArray.length; i++){
-    
+   
     if(altValue === productArray[i].alt){
       productArray[i].clicks++;
     }
@@ -96,25 +110,33 @@ function callbackClick(event){
 
   imageContainer.innerHTML = '';
   clickCount++;
- 
+  
   if(clickCount === roundCount){
       imageContainer.removeEventListener('click', callbackClick);
-      
+    
       percentClicked();
       
       graphResults();
-    }
+      
+      var stringProducts = JSON.stringify(productArray);
+      
+      localStorage.setItem('products', stringProducts);
+      }
     getRandomImage();
     getRandomImage();
     getRandomImage();
   }
 
+
 imageContainer.addEventListener('click', callbackClick);
 
 function percentClicked(){
+    
     var listData = document.createElement('ul');  
     dataContainer.appendChild(listData);
+  
     for(var i=0; i<productArray.length; i++){
+    
       if(productArray[i].displayCount > 0 && productArray[i].clicks > 0){
         var dataElement = document.createElement('li');
         
@@ -125,7 +147,7 @@ function percentClicked(){
       }
       else{
         var dataElement = document.createElement('li');
-        
+       
         dataElement.textContent = `The ${productArray[i].alt} was shown ${productArray[i].displayCount} time(s) and voted for ${productArray[i].clicks} time(s).`;
         
         listData.appendChild(dataElement);
@@ -149,7 +171,7 @@ var displayTimes = [];
     displayTimes.push(productArray[i].displayCount);
   }
   
-var chart = document.getElementById('myChart').getContext('2d');
+var ctx = document.getElementById('myChart').getContext('2d');
 var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
