@@ -1,26 +1,37 @@
 'use strict';
+
 var imageContainer = document.getElementById('product-container');
+
 var dataContainer = document.getElementById('data-container');
-var ImageArray =[];
+
+var uniqueImageArray =[];
 
 var productArray = [];
-var Counts = 5;
+
+var roundCount = 25;
+
 var clickCount = 0;
+
 var parsedProductsArray = [];
+
 
 function checkLocalStorage() {
   if (localStorage.getItem('products') === null) {
+    
     newProducts();
   } else {
-       var getItems = localStorage.getItem('items');
-        var parsedItemsArray = JSON.parse('getItems');
+       
+       var getProducts = localStorage.getItem('products');
+       
+        var parsedProductsArray = JSON.parse(getProducts);
+        
         productArray = parsedProductsArray;
   } 
 }
 checkLocalStorage();
 
 
-function Item(name){
+function Product(name){
   this.filepath = `../img/${name}.jpg`;
   this.alt = name;
   this.title = name;
@@ -28,25 +39,25 @@ function Item(name){
   this.displayCount = 0;
   productArray.push(this);
 }
-function newItem(){
-  new Item('bag');
-  new Item('banana');
-  new Item('bathroom');
-  new Item('boots');
-  new Item('breakfast');
-  new Item('bubblegum');
-  new Item('chair');
-  new Item('cthulhu');
-  new Item('dog-duck');
-  new Item('dragon');
-  new Item('pen');
-  new Item('pet-sweep');
-  new Item('scissors');
-  new Item('shark');
-  new Item('tauntaun');
-  new Item('unicorn');
-  new Item('water-can');
-  new Item('wine-glass');
+function newProducts(){
+  new Product('bag');
+  new Product('banana');
+  new Product('bathroom');
+  new Product('boots');
+  new Product('breakfast');
+  new Product('bubblegum');
+  new Product('chair');
+  new Product('cthulhu');
+  new Product('dog-duck');
+  new Product('dragon');
+  new Product('pen');
+  new Product('pet-sweep');
+  new Product('scissors');
+  new Product('shark');
+  new Product('tauntaun');
+  new Product('unicorn');
+  new Product('water-can');
+  new Product('wine-glass');
   
   var usb = {
   filepath: '../img/usb.gif',
@@ -70,12 +81,12 @@ productArray.push(usb);
 function getRandomImage(){
   var randomIndex = getRandomNumber(productArray.length);
 
-  while(ImageArray.includes(randomIndex)){
+  while(uniqueImageArray.includes(randomIndex)){
     randomIndex = getRandomNumber(productArray.length);
   }
 
   
-  ImageArray.push(randomIndex);
+  uniqueImageArray.push(randomIndex);
 
   
   if(uniqueImageArray.length > 6){
@@ -102,7 +113,7 @@ function callbackClick(event){
   var altValue = event.target.alt;
   
   for(var i=0; i<productArray.length; i++){
-   
+    
     if(altValue === productArray[i].alt){
       productArray[i].clicks++;
     }
@@ -113,7 +124,7 @@ function callbackClick(event){
   
   if(clickCount === roundCount){
       imageContainer.removeEventListener('click', callbackClick);
-    
+      
       percentClicked();
       
       graphResults();
@@ -130,16 +141,17 @@ function callbackClick(event){
 
 imageContainer.addEventListener('click', callbackClick);
 
+
 function percentClicked(){
-    
+   
     var listData = document.createElement('ul');  
     dataContainer.appendChild(listData);
-  
-    for(var i=0; i<productArray.length; i++){
     
+    for(var i=0; i<productArray.length; i++){
+      
       if(productArray[i].displayCount > 0 && productArray[i].clicks > 0){
         var dataElement = document.createElement('li');
-        
+       
         var clickMath = Math.round((productArray[i].clicks/productArray[i].displayCount) * 100);
         dataElement.textContent = `The ${productArray[i].alt} was shown ${productArray[i].displayCount} time(s), voted for ${productArray[i].clicks} time(s) or ${clickMath}% of the time it was shown.`;
         
@@ -147,9 +159,9 @@ function percentClicked(){
       }
       else{
         var dataElement = document.createElement('li');
-       
-        dataElement.textContent = `The ${productArray[i].alt} was shown ${productArray[i].displayCount} time(s) and voted for ${productArray[i].clicks} time(s).`;
         
+        dataElement.textContent = `The ${productArray[i].alt} was shown ${productArray[i].displayCount} time(s) and voted for ${productArray[i].clicks} time(s).`;
+       
         listData.appendChild(dataElement);
       }
     }
@@ -161,11 +173,13 @@ getRandomImage();
 
 
 function graphResults(){
+  
 var productName = [];
 var productVotes = [];
 var displayTimes = [];
+
   for (var i=0; i<productArray.length; i++){
-    
+  
     productName.push(productArray[i].title);
     productVotes.push(productArray[i].clicks);
     displayTimes.push(productArray[i].displayCount);
@@ -307,3 +321,5 @@ var myChart = new Chart(ctx, {
     }
 });
 }
+
+

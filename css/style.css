@@ -3,7 +3,7 @@
   min-width: 700px;
   margin: 10px auto 10px auto;
   padding: 20px;
-  border: 4px #000;
+  border: 4px double #000;
   background-color:#E6F9AF;  
 }
 img{
@@ -28,7 +28,7 @@ img{
 } 
 h1{
   color: #8BBEB2;
-  font-family: 'Lucky Man' ;
+  font-family: 'Luckiest Guy' ;
   text-align: center;
   padding: 5px;
   border: 1px solid black;
